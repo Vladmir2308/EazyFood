@@ -1,0 +1,26 @@
+.input-standart__label{
+    font-size: $textSm;
+}
+
+.input__standart{
+    font-size: $textSm;
+
+    width: 400px;
+    max-width: 100%;
+
+    padding: .8rem 1.6rem;
+
+    border-radius: .6rem;
+
+    &::placeholder{
+        color: #00000060;
+    }
+
+    &--md{
+        width: 200px;
+    }
+
+    &--sm{
+        width: 100px;
+    }
+}

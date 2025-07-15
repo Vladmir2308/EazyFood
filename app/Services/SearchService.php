@@ -52,4 +52,11 @@ class SearchService
 
         return $categories->values();
     }
+
+    public function searchProducts(string $productName)
+    {
+        $products = Product::search($productName)->get();
+
+        return $products;
+    }
 }

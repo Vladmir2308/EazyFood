@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Type;
+use App\Services\SearchService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -9,6 +11,14 @@ class DishController extends Controller
 {
     public function index()
     {
-        return Inertia::render('DishPage', []);
+        $types = Type::all();
+        return Inertia::render('DishPage', [
+            'types' => $types
+        ]);
+    }
+
+    public function searchProduct(Request $request, SearchService $searchService)
+    {
+        return response($searchService->searchProducts($request->input('q')));
     }
 }

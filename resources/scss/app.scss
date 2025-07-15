@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "vars";
+@import "fonts";
+
+html{
+    font-size: 62.5%
+}
+
+@import "blocks/sidebar";
+@import "blocks/header";
+@import "blocks/button";
+@import "blocks/addableList";
+@import "blocks/inputs";
+@import "blocks/select";
+@import "blocks/fields";
+
+/* Pages */
+@import "blocks/pages/dish";
+
+
+body{
+    font-size: 1.6rem;
+}
+
+main{
+    padding: calc($headerHeight + .8rem) 0 0 calc($sidebarWidth + 1rem);
+
+    position: relative;
+
+    font-family: "M_R";
+}
+
+.container{
+    width: 1280px;
+    max-width: 100%;
+}

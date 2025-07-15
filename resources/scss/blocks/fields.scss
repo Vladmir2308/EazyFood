@@ -1,0 +1,89 @@
+.fields-standart__block{
+    padding: 2rem;
+
+    display: flex;
+    flex-direction: column;
+
+    border-bottom: 1px solid $borderSecondColor;
+}
+
+.fields-standart__block-item{
+    display: flex;
+    align-items: start;
+    gap: 8rem;
+}
+
+.fields-standart__block-title{
+    margin-bottom: 2rem;
+}
+
+.fields-product__head{
+    display: grid;
+    grid-template-columns: 1fr .5fr .6fr;
+
+    border-bottom: 1px solid $borderSecondColor;
+    padding-bottom: .2rem;
+
+    margin-bottom: 2rem;
+}
+
+.fields-product__row{
+    display: grid;
+    grid-template-columns: 1fr .5fr .6fr;
+
+    position: relative;
+}
+
+.fields-product__buttons{
+    display: flex;
+    justify-content: space-between;
+}
+
+.fields-product__buttons-unit{
+    display: flex;
+    gap: .5rem;
+}
+
+.fields-product__buttons-delete{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fields-product__buttons-delete__btn{
+    transition: transform .2s linear;
+    &:hover{
+        transform: rotate(90deg);
+        transition: transform .2s linear;
+    }
+}
+
+.fields-product__suggestions{
+    position: absolute;
+    z-index: 100;
+
+    width: 20rem;
+
+    top: 3.5rem;
+
+    border-radius: .5rem;
+
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 4px 0;
+
+    font-size: $textSm;
+}
+
+.fields-product__suggestions-item{
+    padding: 8px;
+    cursor: pointer;
+
+    &:hover {
+        background: #eee;
+    }
+}

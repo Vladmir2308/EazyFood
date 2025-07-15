@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->foreignId('dish_id')->nullable()->constrained('dishes')->nullOnDelete();
-            $table->foreignId('meal_type_id')->nullable()->constrained('meal_types')->nullOnDelete();
+            $table->foreignId('meal_type_id')->nullable()->constrained('types')->nullOnDelete();
             $table->timestamps();
         });
     }

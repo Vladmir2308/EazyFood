@@ -1,0 +1,29 @@
+
+
+header{
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    width: calc(100% - $sidebarWidth);
+
+    padding: 1.5rem;
+
+    background: $mainBgColor;
+    border-bottom: 2px solid $borderMainColor;
+
+    color: black;
+}
+
+.header__inner{
+    display: flex;
+    align-items: center;
+
+    justify-content: end;
+}
+
+.header-profile{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

@@ -7,8 +7,9 @@ use Inertia\Inertia;
 
 
 Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], function () {
-    Route::get('/', 'MainController@index')->name('main.index');
-    Route::get('/products', 'ProductController@index')->name('product.index');
+    /* Main */
+        Route::get('/', 'MainController@index')->name('main.index');
+        Route::get('/products', 'ProductController@index')->name('product.index');
 
     /* Products */
         /* Positions */
@@ -22,6 +23,7 @@ Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], fu
 
     /* Dishes */
         Route::get('/dishes', 'DishController@index')->name('dish.index');
+        Route::get('/dishes/search/product', 'DishController@searchProduct')->name('dish.search.product');
 });
 
 require __DIR__.'/auth.php';

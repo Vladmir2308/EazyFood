@@ -15,8 +15,12 @@ const emit = defineEmits(['closeAddableList'])
                     {{ headerTitle }}
                 </div>
 
-                <div>
+                <div class="addable__list-content">
                     <slot />
+                </div>
+
+                <div class="addable__list-buttons">
+                    <button class="btn">Сохранить</button>
                 </div>
             </div>
         </div>

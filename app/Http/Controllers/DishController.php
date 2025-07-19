@@ -13,7 +13,8 @@ class DishController extends Controller
     {
         $types = Type::all();
         return Inertia::render('DishPage', [
-            'types' => $types
+            'types' => $types,
+            'user_id' => auth()->id()
         ]);
     }
 

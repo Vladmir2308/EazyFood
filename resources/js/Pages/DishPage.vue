@@ -2,7 +2,7 @@
 import {Head} from "@inertiajs/vue3";
 import AddableList from "@/Components/AddableList.vue";
 import MainButton from "@/Components/MainButton.vue";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import { v4 as uuidv4 } from 'uuid'
 import PlusIcon from "@/Components/Svg/PlusIcon.vue";
 import FieldsStandartBlock from "@/Components/FieldsStandartBlock.vue";
@@ -12,12 +12,16 @@ import InputStandart from "@/Components/InputStandart.vue";
 import {debounce} from "lodash";
 import {onKeyUp} from "@vueuse/core";
 
-defineProps({
-    types: null
+const props = defineProps({
+    types: null,
+    user_id: null
 })
+
+const unitBtns = ['г', 'мл', 'шт']
 
 const dish = ref({
     name: null,
+    user_id: props.user_id,
     type_id: 1,
     products: [
         {
@@ -26,7 +30,7 @@ const dish = ref({
             amount: null,
             unit: null,
         }
-    ]
+    ],
 })
 
 /* Addable List */
@@ -65,16 +69,35 @@ const showSuggestionProducts = (inputId) => {
         suggestionProductsShowStatus.value = true
     }, 200)
 }
-const hideSuggestionProducts = () => {
+const hideSuggestionProducts = (name) => {
     setTimeout(() => {
-        currentInputId.value = null
+        if(suggestionProducts.value){
+            suggestionProducts.value.forEach(item => {
+                if(item.name === name){
+                    dish.value.products.find(item => item.id === currentInputId.value).unit = item.default_unit
+                }
+            })
+        }
+        else
+            dish.value.products.find(item => item.id === currentInputId.value).unit = ''
+
+        console.log(suggestionProducts.value)
+
         suggestionProductsShowStatus.value = false
+        currentInputId.value = null
         suggestionProducts.value = []
     }, 200)
 }
 
 const selectSuggestionProduct = (name, rowId) => {
     const currentRow = dish.value.products.find(item => item.id === rowId)
+
+    suggestionProducts.value.forEach(item => {
+        if(item.name === name){
+            currentRow.unit = item.default_unit
+        }
+    })
+
     currentRow.name = name
 }
 
@@ -114,10 +137,17 @@ const autocompleteFirstProduct = (inputId) =>{
 }
 /* ... */
 
+/* Product Unit */
+const selectProductUnit = (unitName) => {
+
+}
+/* ... */
+
 onKeyUp('Enter', (e) => {
     if(e.altKey)
         addProductFieldRow()
 })
+
 </script>
 
 <template>
@@ -154,7 +184,7 @@ onKeyUp('Enter', (e) => {
                                        custom-class="input__standart--md"
                                        v-model="row.name"
                                        @focus="showSuggestionProducts(row.id)"
-                                       @blur="hideSuggestionProducts"
+                                       @blur="hideSuggestionProducts(row.name, row.id)"
                                        @keydown.enter.prevent="autocompleteFirstProduct(row.id)"
                                        @input="searchProduct(row.name, row.id)"
                         />
@@ -182,9 +212,10 @@ onKeyUp('Enter', (e) => {
                         />
                         <div class="fields-product__buttons">
                             <div class="fields-product__buttons-unit">
-                                <button class="btn-fields__product-unit">гр</button>
-                                <button class="btn-fields__product-unit">мл</button>
-                                <button class="btn-fields__product-unit">шт</button>
+                                <button v-for="unit in unitBtns" :key="unit"
+                                        @click="selectProductUnit(unit)"
+                                        :class="['btn-fields__product-unit', row.unit === unit ? 'active' : '']"
+                                >{{ unit  }}</button>
                             </div>
                             <div class="fields-product__buttons-delete"
                                  @click="deleteProductFieldRow(row.id)"

@@ -20,6 +20,11 @@ class DishController extends Controller
 
     public function searchProduct(Request $request, SearchService $searchService)
     {
-        return response($searchService->searchProducts($request->input('q')));
+        return response($searchService->searchProductsWithCategory($request->input('q')));
+    }
+
+    public function store(Request $request)
+    {
+
     }
 }

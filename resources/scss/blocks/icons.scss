@@ -1,0 +1,15 @@
+.list-icon{
+    fill: $sidebarLinkItemColor;
+    width: 25px;
+    cursor: pointer;
+
+    &:hover{
+        fill: $mainBtnBgColor;
+
+        transition: fill .2s linear;
+    }
+
+    &.active{
+        fill: $mainBtnBgColor;
+    }
+}

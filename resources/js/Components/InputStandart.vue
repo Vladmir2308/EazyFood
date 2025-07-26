@@ -12,11 +12,11 @@ const model = defineModel({
 </script>
 
 <template>
-    <input :class="'input__standart ' + customClass"
-           :type="type"
-           :placeholder="placeholder"
-           v-model="model"
-    >
+        <input :class="'input__standart ' + customClass"
+               :type="type"
+               :placeholder="placeholder"
+               v-model="model"
+        >
 </template>
 
 <style scoped>

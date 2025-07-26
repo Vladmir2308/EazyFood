@@ -26,6 +26,11 @@ $secondBtnBgColor: #516365;
             transition: background .2s linear;
         }
     }
+
+    &--submited{
+        background: $secondBtnBgColor;
+        pointer-events: none;
+    }
 }
 
 .btn-icon{

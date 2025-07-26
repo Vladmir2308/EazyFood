@@ -1,8 +1,8 @@
 <script setup>
-import {Head} from "@inertiajs/vue3";
+import {Head, useForm} from "@inertiajs/vue3";
 import AddableList from "@/Components/AddableList.vue";
 import MainButton from "@/Components/MainButton.vue";
-import {ref, watch} from "vue";
+import {nextTick, onBeforeUnmount, onMounted, reactive, ref, watch} from "vue";
 import { v4 as uuidv4 } from 'uuid'
 import PlusIcon from "@/Components/Svg/PlusIcon.vue";
 import FieldsStandartBlock from "@/Components/FieldsStandartBlock.vue";
@@ -11,6 +11,8 @@ import SelectStandartField from "@/Components/SelectStandartField.vue";
 import InputStandart from "@/Components/InputStandart.vue";
 import {debounce} from "lodash";
 import {onKeyUp} from "@vueuse/core";
+import ListIcon from "@/Components/Svg/ListIcon.vue";
+import SelectList from "@/Components/SelectList.vue";
 
 const props = defineProps({
     types: null,
@@ -19,7 +21,7 @@ const props = defineProps({
 
 const unitBtns = ['г', 'мл', 'шт']
 
-const dish = ref({
+const dish = useForm({
     name: null,
     user_id: props.user_id,
     type_id: 1,
@@ -29,6 +31,11 @@ const dish = ref({
             name: null,
             amount: null,
             unit: null,
+            category_id: null,
+            categoryName: null,
+            nameError: false,
+            amountError: false,
+            categoryListShowStatus: false,
         }
     ],
 })
@@ -43,18 +50,23 @@ const showAddableList = () => {
 
 /* Product List */
 const addProductFieldRow = () => {
-    dish.value.products.push({
+    dish.products.push({
         id: uuidv4(),
         name: null,
         amount: null,
         unit: null,
+        category_id: null,
+        categoryName: null,
+        nameError: false,
+        amountError: false,
+        categoryListShowStatus: false,
     })
 }
 const deleteProductFieldRow =  (id) => {
-    if(dish.value.products.length === 1)
+    if(dish.products.length === 2)
         return
 
-    dish.value.products = dish.value.products.filter(item => item.id !== id)
+    dish.products = dish.products.filter(item => item.id !== id)
 }
 /* ... */
 
@@ -73,15 +85,21 @@ const hideSuggestionProducts = (name) => {
     setTimeout(() => {
         if(suggestionProducts.value){
             suggestionProducts.value.forEach(item => {
+                const dishItem = dish.products.find(item => item.id === currentInputId.value)
                 if(item.name === name){
-                    dish.value.products.find(item => item.id === currentInputId.value).unit = item.default_unit
+                    dishItem.unit = item.default_unit
+                    dishItem.categoryName = item.categories[0].name
+                    dishItem.category_id = item.categories[0].id
+
+                }
+                else{
+                    dishItem.categoryName = ''
+                    dishItem.category_id = ''
                 }
             })
         }
         else
-            dish.value.products.find(item => item.id === currentInputId.value).unit = ''
-
-        console.log(suggestionProducts.value)
+            dish.products.find(item => item.id === currentInputId.value).unit = ''
 
         suggestionProductsShowStatus.value = false
         currentInputId.value = null
@@ -90,7 +108,7 @@ const hideSuggestionProducts = (name) => {
 }
 
 const selectSuggestionProduct = (name, rowId) => {
-    const currentRow = dish.value.products.find(item => item.id === rowId)
+    const currentRow = dish.products.find(item => item.id === rowId)
 
     suggestionProducts.value.forEach(item => {
         if(item.name === name){
@@ -111,8 +129,9 @@ const searchProduct = debounce( async (name) => {
         params: { q: name }
     })
 
-    suggestionProducts.value = data
+    console.log(suggestionProducts.value)
 
+    suggestionProducts.value = data
 }, 0)
 
 const typeAutocomplete = async (targetRef, text, from = '') => {
@@ -125,7 +144,7 @@ const typeAutocomplete = async (targetRef, text, from = '') => {
 }
 const autocompleteFirstProduct = (inputId) =>{
     if(suggestionProducts.value.length !== 0){
-        const currentProduct = dish.value.products.find(item => item.id === inputId)
+        const currentProduct = dish.products.find(item => item.id === inputId)
 
         if (currentProduct) {
             const fullName = suggestionProducts.value[0].name
@@ -138,14 +157,86 @@ const autocompleteFirstProduct = (inputId) =>{
 /* ... */
 
 /* Product Unit */
-const selectProductUnit = (unitName) => {
+const selectProductUnit = (unitName, fieldId) => {
+    if(dish.products.find(item => item.id === fieldId).unit === unitName)
+        dish.products.find(item => item.id === fieldId).unit = ''
+    else
+        dish.products.find(item => item.id === fieldId).unit = unitName
+}
+/* ... */
 
+/* Send Data */
+const errors = reactive({
+    dishName: false,
+})
+
+/* Category Modal */
+const openedModalId = ref(null)
+const modalRefs = ref({}) // id => DOM-элемент
+
+function setModalRef(id, el) {
+    if (el) modalRefs.value[id] = el
+    else delete modalRefs.value[id] // при удалении
+}
+function toggleCategoryList(id) {
+    openedModalId.value = openedModalId.value === id ? null : id
+}
+
+function handleClickOutside(event) {
+    const currentId = openedModalId.value
+    const currentModalEl = modalRefs.value[currentId]
+
+    if (currentId && currentModalEl && !currentModalEl.contains(event.target)) {
+        openedModalId.value = null
+    }
+}
+/* ... */
+const sendDishData = () => {
+    let hasError = false
+
+    errors.dishName = !dish.name
+
+
+    dish.products.forEach(product => {
+        // Проверка поля name
+        product.nameError = !product.name || product.name.trim() === ''
+        // Проверка поля amount
+        product.amountError = !product.amount || isNaN(product.amount)
+
+        if (product.nameError || product.amountError) {
+            hasError = true
+        }
+    })
+
+    if(!hasError){
+        dish.post(route('dish.store'))
+    }
 }
 /* ... */
 
 onKeyUp('Enter', (e) => {
     if(e.altKey)
         addProductFieldRow()
+})
+
+onMounted(() => {
+    dish.products.push({
+        id: uuidv4(),
+        name: null,
+        amount: null,
+        unit: null,
+        category_id: null,
+        categoryName: null,
+        nameError: false,
+        amountError: false,
+        categoryListShowStatus: false,
+    })
+
+    document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside)
 })
 
 </script>
@@ -155,11 +246,13 @@ onKeyUp('Enter', (e) => {
 
     <AddableList :visible="addableList"
                  @close-addable-list="addableList = false"
+                 @send-dish-data="sendDishData"
                  header-title="Добавь свое блюдо"
+                 :submit-btn-status="dish.processing"
     >
         <FieldsStandartBlock>
             <div class="flex flex-col gap-8">
-                <FieldsStandartBlockItem title="Название" v-model="dish.name"/>
+                <FieldsStandartBlockItem title="Название" v-model="dish.name" :error-status="errors.dishName"/>
 
                 <SelectStandartField :options="types" v-model="dish.type_id"/>
             </div>
@@ -179,48 +272,57 @@ onKeyUp('Enter', (e) => {
                          v-for="row in dish.products"
                          :key="row.id"
                     >
-                        <InputStandart type="search"
-                                       placeholder="Помидор"
-                                       custom-class="input__standart--md"
-                                       v-model="row.name"
-                                       @focus="showSuggestionProducts(row.id)"
-                                       @blur="hideSuggestionProducts(row.name, row.id)"
-                                       @keydown.enter.prevent="autocompleteFirstProduct(row.id)"
-                                       @input="searchProduct(row.name, row.id)"
-                        />
+                        <div class="flex gap-1 items-center relative">
+                            <InputStandart type="search"
+                                           placeholder="Помидор"
+                                           custom-class="input__standart--md"
+                                           v-model="row.name"
+                                           @focus="showSuggestionProducts(row.id)"
+                                           @blur="hideSuggestionProducts(row.name, row.id)"
+                                           @keydown.enter.prevent="autocompleteFirstProduct(row.id)"
+                                           @input="searchProduct(row.name, row.id)"
+                                           :class="{'border-red-700': row.nameError}"
+                            />
+
+                            <ListIcon class="list-icon" @click.stop="toggleCategoryList(row.id)"
+                                      :class="{'active': openedModalId === row.id}"
+                            />
+
+                            <div class="input__modal" v-if="openedModalId === row.id"
+                                 :ref="el => setModalRef(row.id, el)"
+                            >
+                                <h2 class="input__modal-title">Категория</h2>
+                                <div class="input__modal-content">
+                                    <InputStandart custom-class="input__standart--md" v-model="row.categoryName"/>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <transition name="fade-down" v-auto-animate>
-
-                            <ul
-                                v-if="suggestionProductsShowStatus && currentInputId === row.id && suggestionProducts.length"
-                                class="fields-product__suggestions"
-                            >
-                                <li class="fields-product__suggestions-item"
-                                    v-for="item in suggestionProducts"
-                                    :key="item.id"
-                                    @click="selectSuggestionProduct(item.name, row.id)"
-                                >
-                                    {{ item.name }}
-                                </li>
-                            </ul>
+                            <SelectList v-if="suggestionProductsShowStatus && currentInputId === row.id && suggestionProducts.length"
+                                        :items="suggestionProducts"
+                                        @send-suggestion-item="(productName) => selectSuggestionProduct(productName, row.id)"
+                            />
                         </transition>
 
                         <InputStandart type="number"
                                        placeholder="200"
                                        custom-class="input__standart--sm"
                                        v-model="row.amount"
+                                       :class="{'border-red-700': row.amountError}"
                         />
                         <div class="fields-product__buttons">
                             <div class="fields-product__buttons-unit">
                                 <button v-for="unit in unitBtns" :key="unit"
-                                        @click="selectProductUnit(unit)"
+                                        @click="selectProductUnit(unit, row.id)"
                                         :class="['btn-fields__product-unit', row.unit === unit ? 'active' : '']"
                                 >{{ unit  }}</button>
                             </div>
                             <div class="fields-product__buttons-delete"
                                  @click="deleteProductFieldRow(row.id)"
                             >
-                                <button class="fields-product__buttons-delete__btn">✕</button>
+                                <button class="fields-product__buttons-delete__btn" v-if="dish.products.length > 2">✕</button>
                             </div>
                         </div>
                     </div>

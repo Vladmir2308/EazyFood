@@ -53,9 +53,9 @@ class SearchService
         return $categories->values();
     }
 
-    public function searchProducts(string $productName)
+    public function searchProductsWithCategory(string $productName)
     {
-        $products = Product::search($productName)->get();
+        $products = Product::search($productName)->get()->load('categories');
 
         return $products;
     }

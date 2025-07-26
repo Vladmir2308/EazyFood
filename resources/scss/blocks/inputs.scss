@@ -18,9 +18,37 @@
 
     &--md{
         width: 200px;
+        font-size: $textSm2x;
     }
 
     &--sm{
         width: 100px;
     }
+}
+
+.input__modal{
+    background: white;
+
+    position: absolute;
+    top: -10rem;
+    right: 3.7rem;
+
+    border-radius: 1.2rem;
+    overflow: hidden;
+}
+
+.input__modal-title{
+    padding: .5rem 1.5rem;
+
+    background: $borderMainColor;
+    text-align: center;
+
+    font-size: $textSm;
+    color: black;
+}
+
+.input__modal-content{
+    padding: 1.5rem;
+
+    font-size: $textSm;
 }

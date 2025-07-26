@@ -1,10 +1,11 @@
 <script setup>
 defineProps({
     visible: Boolean,
-    headerTitle: String
+    headerTitle: String,
+    submitBtnStatus: Boolean
 })
 
-const emit = defineEmits(['closeAddableList'])
+const emit = defineEmits(['closeAddableList', 'sendDishData'])
 </script>
 
 <template>
@@ -20,7 +21,11 @@ const emit = defineEmits(['closeAddableList'])
                 </div>
 
                 <div class="addable__list-buttons">
-                    <button class="btn">Сохранить</button>
+                    <button class="btn"
+                            @click="emit('sendDishData')"
+                            :disabled="submitBtnStatus"
+                            :class="{'btn--submited': submitBtnStatus}"
+                    >Сохранить</button>
                 </div>
             </div>
         </div>

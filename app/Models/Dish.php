@@ -6,5 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dish extends Model
 {
-    //
+    protected $guarded = false;
+
+    public function types()
+    {
+        return $this->belongsToMany(Type::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class);
+    }
 }

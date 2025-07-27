@@ -28,6 +28,7 @@ const dish = useForm({
     products: [
         {
             id: uuidv4(),
+            product_id: null,
             name: null,
             amount: null,
             unit: null,
@@ -52,6 +53,7 @@ const showAddableList = () => {
 const addProductFieldRow = () => {
     dish.products.push({
         id: uuidv4(),
+        product_id: null,
         name: null,
         amount: null,
         unit: null,
@@ -83,23 +85,25 @@ const showSuggestionProducts = (inputId) => {
 }
 const hideSuggestionProducts = (name) => {
     setTimeout(() => {
+        console.log(suggestionProducts.value)
+
         if(suggestionProducts.value){
             suggestionProducts.value.forEach(item => {
                 const dishItem = dish.products.find(item => item.id === currentInputId.value)
                 if(item.name === name){
+                    dishItem.product_id = item.id
                     dishItem.unit = item.default_unit
                     dishItem.categoryName = item.categories[0].name
                     dishItem.category_id = item.categories[0].id
-
-                }
-                else{
-                    dishItem.categoryName = ''
-                    dishItem.category_id = ''
                 }
             })
         }
-        else
+        else{
+            dish.products.find(item => item.id === currentInputId.value).id = ''
             dish.products.find(item => item.id === currentInputId.value).unit = ''
+            dish.products.find(item => item.id === currentInputId.value).categoryName = ''
+            dish.products.find(item => item.id === currentInputId.value).category_id = ''
+        }
 
         suggestionProductsShowStatus.value = false
         currentInputId.value = null
@@ -112,14 +116,22 @@ const selectSuggestionProduct = (name, rowId) => {
 
     suggestionProducts.value.forEach(item => {
         if(item.name === name){
+            currentRow.product_id = item.id
             currentRow.unit = item.default_unit
+            currentRow.categoryName = item.categories[0].name
+            currentRow.category_id = item.categories[0].id
         }
     })
 
     currentRow.name = name
 }
 
-const searchProduct = debounce( async (name) => {
+const searchProduct = debounce( async (name, rowId) => {
+    const currentInput = dish.products.find(item => item.id === rowId)
+    currentInput.categoryName = ''
+    currentInput.category_id = ''
+    currentInput.product_id = ''
+
     if(name === ''){
         suggestionProducts.value = ''
         return
@@ -128,8 +140,6 @@ const searchProduct = debounce( async (name) => {
     const { data } = await axios.get(route('dish.search.product'), {
         params: { q: name }
     })
-
-    console.log(suggestionProducts.value)
 
     suggestionProducts.value = data
 }, 0)
@@ -208,8 +218,16 @@ const sendDishData = () => {
         }
     })
 
-    if(!hasError){
-        dish.post(route('dish.store'))
+
+
+    if(!hasError && dish.name){
+        dish.post(route('dish.store'), {
+            onError: (errors) => {
+                if (errors.message) {
+                    alert(errors.message)
+                }
+            },
+        })
     }
 }
 /* ... */
@@ -222,6 +240,7 @@ onKeyUp('Enter', (e) => {
 onMounted(() => {
     dish.products.push({
         id: uuidv4(),
+        product_id: null,
         name: null,
         amount: null,
         unit: null,
@@ -293,7 +312,10 @@ onBeforeUnmount(() => {
                             >
                                 <h2 class="input__modal-title">Категория</h2>
                                 <div class="input__modal-content">
-                                    <InputStandart custom-class="input__standart--md" v-model="row.categoryName"/>
+                                    <InputStandart custom-class="input__standart--md"
+                                                   v-model="row.categoryName"
+                                                   @input="row.category_id = ''"
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -2,17 +2,23 @@
 import {Link} from "@inertiajs/vue3";
 import HouseIcon from "@/Components/Svg/HouseIcon.vue";
 import DIshIcon from "@/Components/Svg/DIshIcon.vue";
+import ScheduleIcon from "@/Components/Svg/ScheduleIcon.vue";
 
 const pages = {
-    'MainPage': {
+    /*'MainPage': {
         icon: HouseIcon,
         title: 'Главная',
         routeLink: 'main.index',
-    },
+    },*/
     'DishPage': {
         icon: DIshIcon,
         title: 'Блюда',
         routeLink: 'dish.index',
+    },
+    'SchedulePage': {
+        icon: ScheduleIcon,
+        title: 'Расписание',
+        routeLink: 'schedule.index',
     },
 }
 
@@ -41,7 +47,10 @@ const pages = {
             </ul>
         </nav>
 
-
+        <div>
+            <Link class="btn btn--btn__gray"
+                  :href="route('logout')" method="post" type="button">Выйти</Link>
+        </div>
     </div>
 </template>
 

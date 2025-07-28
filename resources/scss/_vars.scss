@@ -1,4 +1,4 @@
-$sidebarWidth: 10rem;
+$sidebarWidth: 12rem;
 $headerHeight: 7rem;
 
 /* Text Sizes */
@@ -25,4 +25,8 @@ $borderSecondColor: #b8b8b8;
 /* Svg */
 $svgIconFill: $white;
 
+/* Z-indexes */
+$zAddableList: 999;
+$zHeader: 998;
+$zSideBar: 1000;
 

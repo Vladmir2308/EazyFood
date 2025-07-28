@@ -36,7 +36,7 @@ const product = useForm({
 const category = useForm({
     id: null,
     name: null,
-    user_id: props.user_id,
+    user_id: props.userId,
     type: 'Category'
 })
 

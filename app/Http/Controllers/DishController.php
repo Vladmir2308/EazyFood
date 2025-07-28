@@ -15,8 +15,13 @@ class DishController extends Controller
     public function index()
     {
         $types = Type::all();
+        $dishesByTypes = Type::with(['dishes' => function ($query) {
+            $query->where('user_id', auth()->id());
+        }])->get();
+
         return Inertia::render('DishPage', [
             'types' => $types,
+            'dishesByTypes' => $dishesByTypes,
             'user_id' => auth()->id()
         ]);
     }
@@ -50,18 +55,33 @@ class DishController extends Controller
             if($product['category_id'] && $product['product_id'])
                 $dish->products()->attach($product['product_id'], ['amount' => $product['amount'], 'unit' => $product['unit']]);
             else if(!$product['category_id'] && $product['product_id']){
-                $category = Category::create([$product['categoryName'], auth()->id()]);
+                $category = Category::firstOrCreate([
+                    'name' => $product['categoryName'],
+                    'user_id' => auth()->id()
+                ]);
                 $category->products()->attach($product['product_id']);
             }
             else{
-                $product = Product::create([
+                $productCreated = Product::firstOrCreate([
                     'name' => $product['name'],
                     'default_unit' => $product['unit'],
                     'user_id' => auth()->id()
                 ]);
 
-                $category = Category::create([$product['categoryName'], auth()->id()]);
+                if($product['categoryName']){
+                    $category = Category::firstOrCreate([
+                        'name' => $product['categoryName'],
+                        'user_id' => auth()->id()
+                    ]);
+
+                    $productCreated->categories()->attach($category->id);
+                }
             }
         }
+    }
+
+    public function delete(Request $request)
+    {
+        Dish::where('id', $request['id'])->delete();
     }
 }

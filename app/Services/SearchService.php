@@ -55,7 +55,12 @@ class SearchService
 
     public function searchProductsWithCategory(string $productName)
     {
-        $products = Product::search($productName)->get()->load('categories');
+        $products = Product::search($productName)
+            ->get()
+            ->filter(fn ($product) => $product->user_id === auth()->id() || $product->user_id === null)
+            ->load('categories')
+            ->values();
+
 
         return $products;
     }

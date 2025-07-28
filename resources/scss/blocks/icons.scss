@@ -13,3 +13,35 @@
         fill: $mainBtnBgColor;
     }
 }
+
+.circle-xmark-icon{
+    width: 40px;
+
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    cursor: pointer;
+
+    fill: $mainBtnBgColor;
+
+    &:hover{
+        fill: $mainBtnBgColorHover;
+        transition: fill .2s linear;
+    }
+}
+
+.eye-icon{
+    width: 30px;
+
+    cursor: pointer;
+
+    fill: $mainBtnBgColor;
+
+    &:hover{
+        fill: $mainBtnBgColorHover;
+        transition: fill .2s linear;
+    }
+}

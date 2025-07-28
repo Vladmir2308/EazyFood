@@ -8,8 +8,6 @@ import {Link} from "@inertiajs/vue3";
         <div class="header__inner">
             <div class="header-profile">
                 <div class="btn pointer-events-none">{{ $page.props.auth.user.name }}</div>
-                <Link class="btn btn--btn__gray"
-                      :href="route('logout')" method="post" type="button">Выйти</Link>
             </div>
         </div>
     </header>

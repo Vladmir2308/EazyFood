@@ -6,6 +6,8 @@ $sidebarLinkItemColorActive: #08887a;
 
 .sidebar{
     position: fixed;
+    z-index: $zSideBar;
+
     height: 100vh;
     width: $sidebarWidth;
 

@@ -1,9 +1,8 @@
-
-
 header{
     position: fixed;
     top: 0;
     right: 0;
+    z-index: $zHeader;
 
     width: calc(100% - $sidebarWidth);
 

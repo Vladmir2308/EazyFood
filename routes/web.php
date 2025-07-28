@@ -24,7 +24,11 @@ Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], fu
     /* Dishes */
         Route::get('/dishes', 'DishController@index')->name('dish.index');
         Route::post('/dishes/store', 'DishController@store')->name('dish.store');
+        Route::delete('/dishes/delete', 'DishController@delete')->name('dish.delete');
         Route::get('/dishes/search/product', 'DishController@searchProduct')->name('dish.search.product');
+
+    /* Schedule */
+        Route::get('/schedule', 'ScheduleController@index')->name('schedule.index');
 });
 
 require __DIR__.'/auth.php';

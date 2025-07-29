@@ -21,6 +21,7 @@ html{
 
 /* Pages */
 @import "blocks/pages/dish";
+@import "blocks/pages/schedule";
 
 
 body{
@@ -28,11 +29,18 @@ body{
 }
 
 main{
-    padding: calc($headerHeight + .8rem) 0 0 calc($sidebarWidth + 1rem);
+    padding: calc($headerHeight - .5rem) 0 2rem calc($sidebarWidth + 1rem);
 
     position: relative;
 
     font-family: "M_R";
+
+    height: 100vh;
+
+    overflow-y: scroll;
+    overflow-x: scroll;
+
+    scrollbar-width: none;
 }
 
 .container{

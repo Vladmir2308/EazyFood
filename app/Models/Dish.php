@@ -8,9 +8,9 @@ class Dish extends Model
 {
     protected $guarded = false;
 
-    public function types()
+    public function type()
     {
-        return $this->belongsToMany(Type::class);
+        return $this->belongsTo(Type::class);
     }
 
     public function products()

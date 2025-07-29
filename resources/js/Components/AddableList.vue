@@ -20,7 +20,7 @@ const props = defineProps({
 
 const emit = defineEmits(['closeAddableList'])
 
-const unitBtns = ['г', 'мл', 'шт']
+const unitBtns = ['гр', 'мл', 'шт']
 
 const dish = useForm({
     name: null,

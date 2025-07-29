@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Dish;
 use App\Models\Product;
 use App\Models\Type;
+use App\Services\DishService;
 use App\Services\SearchService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,9 +16,17 @@ class DishController extends Controller
     public function index()
     {
         $types = Type::all();
-        $dishesByTypes = Type::with(['dishes' => function ($query) {
-            $query->where('user_id', auth()->id());
-        }])->get();
+        $dishesByTypes = $types->map(function ($type) {
+            return [
+                'id' => $type->id,
+                'name' => $type->name,
+                'color' => $type->color,
+                'dishes' => Dish::where('user_id', auth()->id())
+                    ->where('type_id', $type->id)
+                    ->orderBy('display_number') // если ты добавил сортировку по номеру
+                    ->get(),
+            ];
+        });
 
         return Inertia::render('DishPage', [
             'types' => $types,
@@ -33,8 +42,16 @@ class DishController extends Controller
 
     public function store(Request $request)
     {
-        $dishData = $request->all(['name', 'user_id']);
-        $dishType = $request->input('type_id');
+        $maxNumber = Dish::where('user_id', auth()->id())
+            ->where('type_id', $request['type_id'])
+            ->max('display_number');
+
+        $dishData = [
+            'name' => $request['name'],
+            'user_id' => $request['user_id'],
+            'type_id' => $request['type_id'],
+            'display_number' => $maxNumber ? $maxNumber + 1 : 1
+        ];
         $products = $request->input('products');
 
         $existingDish = Dish::where('name', $dishData['name'])
@@ -48,8 +65,6 @@ class DishController extends Controller
         }
 
         $dish = Dish::create($dishData);
-
-        $dish->types()->attach($dishType);
 
         foreach ($products as $product) {
             if($product['category_id'] && $product['product_id'])
@@ -82,6 +97,12 @@ class DishController extends Controller
 
     public function delete(Request $request)
     {
-        Dish::where('id', $request['id'])->delete();
+        $dish = Dish::findOrFail($request['id']);
+        $userId = $dish->user_id;
+        $typeId = $dish->type_id;
+
+        $dish->delete();
+
+        DishService::reindexDisplayNumbers($userId, $typeId);
     }
 }

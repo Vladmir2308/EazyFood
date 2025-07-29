@@ -1,0 +1,63 @@
+.schedule{
+    display: flex;
+    height: 100%;
+}
+
+.schedule-grid{
+    width: 80%;
+
+}
+
+.schedule-dishes{
+    width: 20%;
+
+    padding: 2rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    background: $sidebarBgColor;
+}
+
+.schedule-dishes__list{
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+}
+
+.schedule-dish__item{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    background: white;
+    padding: .5rem;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.schedule-dish__item-number{
+    background: gray;
+
+    width: 3.3rem;
+    height: 3.0rem;
+
+    font-size: $textSm;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+}
+
+.schedule-dish__item-title{
+    font-size: $textSm;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Schedule Grid */

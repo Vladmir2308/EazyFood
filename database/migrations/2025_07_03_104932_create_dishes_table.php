@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->index('dish_name_index');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->unsignedInteger('display_number')->nullable()->unsigned();
+            $table->foreignId('type_id')->nullable()->constrained('types')->onDelete('set null');
             $table->timestamps();
         });
     }

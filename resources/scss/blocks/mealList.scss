@@ -53,8 +53,27 @@
     border-radius: 2rem;
 
     padding: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .meal__list-dishes__item-title{
     text-align: center;
+}
+
+.meal__list-dishes__item-number{
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 2rem;
+
+    width: 2.8rem;
+    height: 2.8rem;
+
+    border-radius: 50%;
 }

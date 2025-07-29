@@ -7,6 +7,7 @@ defineProps({
     dishes: null,
     customClass: null,
     showToolsStatus: null,
+    dishColor: null,
 })
 
 const deleteDishOnId = (dishId) => {
@@ -28,6 +29,11 @@ const deleteDishOnId = (dishId) => {
                  :key="dish.id"
             >
                 <div class="meal__list-dishes__item-title">{{ dish.name }}</div>
+                <div class="meal__list-dishes__item-number"
+                     :style="{ background: dishColor}"
+                >
+                    {{ dish.display_number}}
+                </div>
 
                 <CircleXmarkIcon class="circle-xmark-icon" @click="deleteDishOnId(dish.id)" v-if="showToolsStatus"/>
             </div>

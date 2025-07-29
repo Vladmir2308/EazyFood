@@ -9,7 +9,7 @@ import TheSideBar from "@/Partials/TheSideBar.vue";
 
     <TheHeader />
 
-    <main>
+    <main class="main-content">
         <slot></slot>
     </main>
 

@@ -1,0 +1,57 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: 🛠 Сборка проекта
+    runs-on: self-hosted
+
+    steps:
+      - name: 🌀 Клонирование репозитория
+        uses: actions/checkout@v3
+
+      - name: 📦 Кэш Composer (vendor)
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: 📦 Кэш NPM (node_modules)
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: 🔧 Установка PHP-зависимостей
+        run: composer install --no-progress --no-interaction
+
+      - name: 🔧 Установка JS-зависимостей
+        run: npm install
+
+      - name: 🏗 Сборка фронтенда
+        run: npm run build
+
+      - name: 🛡 Дать права на storage
+        run: sudo chmod 777 -R storage
+
+  deploy:
+    name: 🚀 Деплой проекта на сервер
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - name: 📂 Копирование проекта в /var/www/EazyFood
+        run: |
+          rm -rf /var/www/EazyFood/*
+          cp -R . /var/www/EazyFood
+          /usr/bin/php /var/www/EazyFood/artisan migrate
+          sudo chown -R github-runner:www-data /var/www/EazyFood
+          sudo chmod -R 775 /var/www/EazyFood

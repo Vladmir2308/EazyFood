@@ -7,6 +7,7 @@ import PlusIcon from "@/Components/Svg/PlusIcon.vue";
 import MealListByType from "@/Components/MealListByType.vue";
 import EyeOpenIcon from "@/Components/Svg/EyeOpenIcon.vue";
 import EyeCloseIcon from "@/Components/Svg/EyeCloseIcon.vue";
+import MainLayout from "@/Layouts/MainLayout.vue";
 
 const props = defineProps({
     types: null,
@@ -28,33 +29,35 @@ const showEyeStatus = ref(false)
 </script>
 
 <template>
-    <div class="dish">
-        <Head title="Блюда"/>
+    <MainLayout>
+        <div class="dish">
+            <Head title="Блюда"/>
 
-        <AddableList :visible="addableList"
-                     @close-addable-list="addableList = false"
-                     header-title="Добавь свое блюдо"
-                     :types="types"
-                     :user-id="user_id"
-        />
-
-        <div class="dish__header">
-            <MainButton :icon="PlusIcon" title="Добавить" @click="showAddableList"/>
-            <EyeOpenIcon class="eye-icon" v-if="showEyeStatus" @click="showEyeStatus = !showEyeStatus"/>
-            <EyeCloseIcon class="eye-icon" v-if="!showEyeStatus" @click="showEyeStatus = !showEyeStatus"/>
-        </div>
-
-        <div class="dish__content">
-            <MealListByType v-for="type in dishesByTypes"
-                            :key="type.id"
-                            :type="type.name"
-                            :dishes="type.dishes"
-                            :custom-class="`meal__list-type--color-${type.id}`"
-                            :show-tools-status="showEyeStatus"
-                            :dish-color="type.color"
+            <AddableList :visible="addableList"
+                         @close-addable-list="addableList = false"
+                         header-title="Добавь свое блюдо"
+                         :types="types"
+                         :user-id="user_id"
             />
+
+            <div class="dish__header">
+                <MainButton :icon="PlusIcon" title="Добавить" @click="showAddableList"/>
+                <EyeOpenIcon class="eye-icon" v-if="showEyeStatus" @click="showEyeStatus = !showEyeStatus"/>
+                <EyeCloseIcon class="eye-icon" v-if="!showEyeStatus" @click="showEyeStatus = !showEyeStatus"/>
+            </div>
+
+            <div class="dish__content">
+                <MealListByType v-for="type in dishesByTypes"
+                                :key="type.id"
+                                :type="type.name"
+                                :dishes="type.dishes"
+                                :custom-class="`meal__list-type--color-${type.id}`"
+                                :show-tools-status="showEyeStatus"
+                                :dish-color="type.color"
+                />
+            </div>
         </div>
-    </div>
+    </MainLayout>
 </template>
 
 <style>

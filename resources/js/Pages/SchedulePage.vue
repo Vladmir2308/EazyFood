@@ -16,8 +16,11 @@ defineProps({
         <div class="schedule">
             <ScheduleGrid />
 
+            123
+
             <ScheduleDishes :items="dishes"/>
         </div>
+
     </MainLayout>
 
 </template>

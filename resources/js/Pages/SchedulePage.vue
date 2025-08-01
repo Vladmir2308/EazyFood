@@ -16,7 +16,7 @@ defineProps({
         <div class="schedule">
             <ScheduleGrid />
 
-            123456
+            12345
 
             <ScheduleDishes :items="dishes"/>
         </div>

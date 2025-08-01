@@ -41,7 +41,7 @@ const submit = () => {
     </div>
 
     <form @submit.prevent="submit">
-        <div>
+        <div class="login">
             <InputLabel for="email" value="Почта" />
 
             <TextInput

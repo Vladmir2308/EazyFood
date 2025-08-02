@@ -20,8 +20,9 @@ html{
 @import "blocks/mealList";
 
 /* Pages */
-@import "blocks/pages/dish";
-@import "blocks/pages/schedule";
+@import "blocks/pages/dish/dish";
+@import "blocks/pages/schedule/schedule";
+@import "blocks/pages/schedule/schedule-grid";
 
 
 body{
@@ -29,7 +30,7 @@ body{
 }
 
 main{
-    padding: calc($headerHeight - .5rem) 0 2rem calc($sidebarWidth + 1rem);
+    padding: calc($headerHeight - .5rem) 0 0 calc($sidebarWidth);
 
     position: relative;
 

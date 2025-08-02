@@ -1,0 +1,36 @@
+.schedule-grid {
+    padding: 1rem;
+    height: calc(100vh - $headerHeight + .45rem); /* или 100% если родитель ограничен */
+    display: flex;
+}
+
+.schedule-grid__inner {
+    display: grid;
+    flex: 1;
+    grid-template-columns: 60px repeat(3, 1fr); /* левый столбец + 3 приёма пищи */
+    grid-template-rows: auto repeat(7, 1fr);     /* верхняя строка фиксированная + 7 строк равных */
+    border: 1px solid #ccc;
+}
+
+.header-cell {
+    background-color: #f1f1f1;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+}
+
+.day-cell {
+    background-color: #f9f9f9;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+}
+
+.cell {
+    border: 1px solid #ddd;
+    padding: 8px;
+}

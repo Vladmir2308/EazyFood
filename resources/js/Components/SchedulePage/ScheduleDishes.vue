@@ -1,11 +1,14 @@
 <script setup>
+import draggable from "vuedraggable";
 import InputStandart from "@/Components/InputStandart.vue";
+import {ref} from "vue";
 
 const props = defineProps({
     items: null,
 })
 
-console.log(props.items)
+const dishes = ref(props.items)
+
 </script>
 
 <template>
@@ -16,17 +19,22 @@ console.log(props.items)
 
         <div class="filters"></div>
 
-        <div class="schedule-dishes__list">
-            <div class="schedule-dish__item"
-                 v-for="item in items"
-                 :key="item.id"
-            >
-                <div class="schedule-dish__item-number"
-                     :style="{ background: item.type.color }"
-                >{{ item.display_number }}</div>
-                <div class="schedule-dish__item-title">{{ item.name }}</div>
-            </div>
-        </div>
+
+        <draggable class="schedule-dishes__list"
+            v-model="dishes"
+            group="meals"
+            @start="drag=true"
+            @end="drag=false"
+            item-key="id">
+            <template #item="{element}">
+                <div class="schedule-dish__item">
+                    <div class="schedule-dish__item-number"
+                         :style="{ background: element.type.color }"
+                    >{{ element.display_number }}</div>
+                    <div class="schedule-dish__item-title">{{ element.name }}</div>
+                </div>
+            </template>
+        </draggable>
     </div>
 </template>
 

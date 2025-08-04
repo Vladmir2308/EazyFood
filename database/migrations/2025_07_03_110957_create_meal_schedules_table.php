@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('meal_schedules', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->foreignId('dish_id')->nullable()->constrained('dishes')->nullOnDelete();
-            $table->foreignId('meal_type_id')->nullable()->constrained('types')->nullOnDelete();
+            $table->foreignId('dish_id')->nullable()->constrained('dishes')->cascadeOnDelete();
+            $table->foreignId('meal_type_id')->nullable()->constrained('types')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

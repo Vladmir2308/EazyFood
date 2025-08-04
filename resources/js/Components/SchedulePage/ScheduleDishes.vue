@@ -2,12 +2,17 @@
 import draggable from "vuedraggable";
 import InputStandart from "@/Components/InputStandart.vue";
 import {ref} from "vue";
+import DishNumberCircle from "@/Components/SchedulePage/DishNumberCircle.vue";
 
 const props = defineProps({
     items: null,
 })
 
 const dishes = ref(props.items)
+const dishItemStatus = ref(true)
+const startDragElement = (event) => {
+
+}
 
 </script>
 
@@ -21,17 +26,19 @@ const dishes = ref(props.items)
 
 
         <draggable class="schedule-dishes__list"
-            v-model="dishes"
-            group="meals"
-            @start="drag=true"
-            @end="drag=false"
-            item-key="id">
+                   v-model="dishes"
+                   :group="{ name: 'meals', pull: 'clone', put: false}"
+                   @end="drag=false"
+                   item-key="id"
+                   chosen-class="drag-chosen"
+
+        >
             <template #item="{element}">
-                <div class="schedule-dish__item">
-                    <div class="schedule-dish__item-number"
-                         :style="{ background: element.type.color }"
-                    >{{ element.display_number }}</div>
-                    <div class="schedule-dish__item-title">{{ element.name }}</div>
+                <div>
+                    <div class="schedule-dish__item" v-if="dishItemStatus">
+                        <DishNumberCircle :dish="element"/>
+                        <div class="schedule-dish__item-title">{{ element.name }}</div>
+                    </div>
                 </div>
             </template>
         </draggable>
@@ -39,5 +46,9 @@ const dishes = ref(props.items)
 </template>
 
 <style scoped>
+.drag-chosen {
+    opacity: 0.3;
 
+    transition: opacity .3s linear;
+}
 </style>

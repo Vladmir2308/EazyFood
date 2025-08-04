@@ -6,6 +6,8 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 
 defineProps({
     dishes: null,
+    types: null,
+    scheduleData: null
 })
 </script>
 
@@ -14,7 +16,7 @@ defineProps({
         <Head title="Расписание"/>
 
         <div class="schedule">
-            <ScheduleGrid />
+            <ScheduleGrid :types="types" :scheduleItems="scheduleData"/>
 
             <ScheduleDishes :items="dishes"/>
         </div>

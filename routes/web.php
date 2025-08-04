@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], fu
 
     /* Schedule */
         Route::get('/schedule', 'ScheduleController@index')->name('schedule.index');
+        Route::post('/schedule/store', 'ScheduleController@store')->name('schedule.store');
 });
 
 require __DIR__.'/auth.php';

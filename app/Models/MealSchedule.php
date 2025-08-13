@@ -13,7 +13,7 @@ class MealSchedule extends Model
         return $this->belongsTo(Dish::class);
     }
 
-    public function mealType()
+    public function type()
     {
         return $this->belongsTo(Type::class);
     }

@@ -6,7 +6,7 @@ defineProps({
 
 <template>
     <div class="schedule-dish__item-number"
-         :style="{ background: dish.type.color }"
+         :style="{ background: dish.color }"
     >{{ dish.display_number }}</div>
 </template>
 

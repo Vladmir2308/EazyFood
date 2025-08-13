@@ -10,9 +10,8 @@ const props = defineProps({
 
 const dishes = ref(props.items)
 const dishItemStatus = ref(true)
-const startDragElement = (event) => {
 
-}
+
 
 </script>
 
@@ -29,6 +28,7 @@ const startDragElement = (event) => {
                    v-model="dishes"
                    :group="{ name: 'meals', pull: 'clone', put: false}"
                    @end="drag=false"
+                   :sort="false"
                    item-key="id"
                    chosen-class="drag-chosen"
 

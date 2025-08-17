@@ -31,6 +31,16 @@ Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], fu
         Route::get('/schedule', 'ScheduleController@index')->name('schedule.index');
         Route::post('/schedule/store', 'ScheduleController@store')->name('schedule.store');
         Route::delete('/schedule/delete', 'ScheduleController@delete')->name('schedule.delete');
+
+    /* Basket */
+        Route::get('/basket', 'BasketController@index')->name('basket.index');
+
+    /* Telegram */
+});
+
+Route::group(['namespace' => 'App\Http\Controllers'], function () {
+    Route::post('/telegram/sendBasket', 'TelegramController@sendBasketInMessage')->name('telegram.send.basket');
+    Route::post('/telegram/sendBasketInMessage', 'TelegramController@sendBasketMessage')->name('telegram.send.message');
 });
 
 require __DIR__.'/auth.php';

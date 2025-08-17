@@ -3,6 +3,7 @@ import {Link} from "@inertiajs/vue3";
 import HouseIcon from "@/Components/Svg/HouseIcon.vue";
 import DIshIcon from "@/Components/Svg/DIshIcon.vue";
 import ScheduleIcon from "@/Components/Svg/ScheduleIcon.vue";
+import BasketIcon from "@/Components/Svg/BasketIcon.vue";
 
 const pages = {
     /*'MainPage': {
@@ -19,6 +20,11 @@ const pages = {
         icon: ScheduleIcon,
         title: 'Расписание',
         routeLink: 'schedule.index',
+    },
+    'BasketPage': {
+        icon: BasketIcon,
+        title: 'Корзина',
+        routeLink: 'basket.index',
     },
 }
 

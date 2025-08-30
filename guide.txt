@@ -1,0 +1,5 @@
+Задать веб хук боту
+https://api.telegram.org/bot7448466875:AAHm3A8EHntITMQk6GYCzWYSZo1BIc75VK8/setWebhook?url=https://xxxxx.ngrok-free.app/telegram/createChat
+
+Проверить веб хук бота
+https://api.telegram.org/bot7448466875:AAHm3A8EHntITMQk6GYCzWYSZo1BIc75VK8/getWebhookInfo

@@ -1,6 +1,7 @@
 <script setup>
 import CircleXmarkIcon from "@/Components/Svg/CircleXmarkIcon.vue";
 import {useForm} from "@inertiajs/vue3";
+import MealListItem from "@/Components/MealListItem.vue";
 
 defineProps({
     type: null,
@@ -10,12 +11,14 @@ defineProps({
     dishColor: null,
 })
 
-const deleteDishOnId = (dishId) => {
-    const dish = useForm({
-        id: dishId
-    })
+const dishItem = useForm({
+    id: null
+})
 
-    dish.delete(route('dish.delete'))
+const deleteDishOnId = (dishId) => {
+    dishItem.id = dishId
+
+    dishItem.delete(route('dish.delete'))
 }
 </script>
 
@@ -24,19 +27,13 @@ const deleteDishOnId = (dishId) => {
         <div :class="'meal__list-type ' + customClass">{{ type }}</div>
 
         <div class="meal__list-dishes" v-auto-animate>
-            <div class="meal__list-dishes__item"
-                 v-for="dish in dishes"
-                 :key="dish.id"
-            >
-                <div class="meal__list-dishes__item-title">{{ dish.name }}</div>
-                <div class="meal__list-dishes__item-number"
-                     :style="{ background: dishColor}"
-                >
-                    {{ dish.display_number}}
-                </div>
-
-                <CircleXmarkIcon class="circle-xmark-icon" @click="deleteDishOnId(dish.id)" v-if="showToolsStatus"/>
-            </div>
+            <MealListItem v-for="dish in dishes"
+                          :key="dish.id"
+                          :current-dish="dish"
+                          :dish-color="dishColor"
+                          :delete-process="dishItem.processing"
+                          @delete-item-from-meal-list="deleteDishOnId"
+            />
         </div>
     </div>
 </template>

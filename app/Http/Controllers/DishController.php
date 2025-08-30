@@ -21,7 +21,8 @@ class DishController extends Controller
                 'id' => $type->id,
                 'name' => $type->name,
                 'color' => $type->color,
-                'dishes' => Dish::where('user_id', auth()->id())
+                'dishes' => Dish::with('products.categories')
+                    ->where('user_id', auth()->id())
                     ->where('type_id', $type->id)
                     ->orderBy('display_number') // если ты добавил сортировку по номеру
                     ->get(),

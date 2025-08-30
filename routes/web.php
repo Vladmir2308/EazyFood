@@ -39,7 +39,7 @@ Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], fu
 });
 
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
-    Route::post('/telegram/sendBasket', 'TelegramController@sendBasketInMessage')->name('telegram.send.basket');
+    Route::post('/telegram/createChat', 'TelegramController@createChat')->name('telegram.create.chat');
     Route::post('/telegram/sendBasketInMessage', 'TelegramController@sendBasketMessage')->name('telegram.send.message');
 });
 

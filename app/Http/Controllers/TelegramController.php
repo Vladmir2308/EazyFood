@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Log;
 
 class TelegramController extends Controller
 {
-    public function sendBasketInMessage(Request $request)
+    public function createChat(Request $request)
     {
         $data = $request->all();
+
+        Log::info('Webhook IN:', $request->all());
 
         if (isset($data['message']['text']) && str_starts_with($data['message']['text'], '/start')) {
             $parts = explode(' ', $data['message']['text']);
@@ -40,7 +42,7 @@ class TelegramController extends Controller
             foreach ($items as $item) {
                 $message .= " - {$item['name']} {$item['total']} {$item['unit']}\n";
             }
-            $message .= "\n"; // отступ между категориями
+            $message .= "\n";
         }
 
         Http::post("https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage", [

@@ -1,6 +1,6 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import {Head, Link, useForm} from "@inertiajs/vue3";
+import {Head, Link, useForm, usePage} from "@inertiajs/vue3";
 import MainButton from "@/Components/MainButton.vue";
 import {ref} from "vue";
 
@@ -8,6 +8,8 @@ const props = defineProps({
     basket: null,
     user: null
 })
+
+const userUpdated = usePage().props.auth.user
 
 const sendMessage = () => {
     const basket = useForm({
@@ -24,8 +26,8 @@ const sendMessage = () => {
 
     <MainLayout>
         <div class="basket">
-            <a :href="'https://t.me/testvovanchichbot?start=' + user_id"
-               v-if="!user.telegram_chat_id"
+            <a :href="'https://t.me/testvovanchichbot?start=' + user.id"
+               v-if="!userUpdated.telegram_chat_id"
                target="_blank"
                rel="noopener noreferrer">
                 <MainButton class="basket-send__button-tg"

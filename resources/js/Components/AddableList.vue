@@ -25,6 +25,7 @@ const emit = defineEmits(['closeAddableList'])
 const unitBtns = ['гр', 'мл', 'шт']
 
 const dish = useForm({
+    id: null,
     name: null,
     user_id: props.userId,
     type_id: 1,
@@ -48,6 +49,7 @@ const dish = useForm({
 const buttonLabel = ref('Сохранить')
 
 const fillUpdatedDishProduct = () => {
+    dish.id = props.updatedDish.id
     dish.name = props.updatedDish.name
     dish.type_id = props.updatedDish.type_id
 
@@ -314,7 +316,7 @@ const sendDishData = () => {
         }
 
         else if(props.method === 'update'){
-            console.log('da update')
+            dish.post(route('dish.update'))
         }
     }
 }

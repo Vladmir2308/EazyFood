@@ -24,6 +24,7 @@ Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], fu
     /* Dishes */
         Route::get('/dishes', 'DishController@index')->name('dish.index');
         Route::post('/dishes/store', 'DishController@store')->name('dish.store');
+        Route::post('/dishes/update', 'DishController@update')->name('dish.update');
         Route::delete('/dishes/delete', 'DishController@delete')->name('dish.delete');
         Route::get('/dishes/search/product', 'DishController@searchProduct')->name('dish.search.product');
 

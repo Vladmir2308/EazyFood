@@ -6,7 +6,9 @@ use App\Models\Dish;
 use App\Models\MealSchedule;
 use App\Models\Type;
 use App\Services\CrudService;
+use App\Services\SearchService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ScheduleController extends Controller
@@ -54,5 +56,13 @@ class ScheduleController extends Controller
     public function delete(Request $request)
     {
         MealSchedule::where('id', $request['id'])->delete();
+    }
+
+    public function getDishesInQuery(Request $request, SearchService $searchService)
+    {
+        $dishes = $searchService->searchDishes($request->input('q'));
+
+
+        return response($dishes);
     }
 }

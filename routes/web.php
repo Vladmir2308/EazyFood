@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], fu
         Route::post('/schedule/store', 'ScheduleController@store')->name('schedule.store');
         Route::delete('/schedule/delete', 'ScheduleController@delete')->name('schedule.delete');
 
+        Route::get('/schedule/search/dishes', 'ScheduleController@getDishesInQuery')->name('schedule.search.dishes');
+
     /* Basket */
         Route::get('/basket', 'BasketController@index')->name('basket.index');
 

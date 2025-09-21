@@ -33,6 +33,7 @@ const showAddableList = (method) => {
 
 /* Eyes */
 const showEyeStatus = ref(false)
+provide('eyeStatus', showEyeStatus)
 /* ... */
 </script>
 

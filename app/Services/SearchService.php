@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use App\Models\Dish;
 use App\Models\Product;
 
 class SearchService
@@ -63,5 +64,19 @@ class SearchService
 
 
         return $products;
+    }
+
+    public function searchDishes(string $dishName)
+    {
+        $dishes = Dish::search($dishName)
+            ->get()
+            ->load('type')
+            ->map(function ($item) {
+                $item->color = $item->type->color ?? null;
+                return $item;
+            })
+            ->sortBy('name');
+
+        return $dishes;
     }
 }

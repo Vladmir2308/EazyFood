@@ -1,30 +1,46 @@
 <script setup>
 import draggable from "vuedraggable";
 import InputStandart from "@/Components/InputStandart.vue";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import DishNumberCircle from "@/Components/SchedulePage/DishNumberCircle.vue";
+import {debounce} from "lodash";
 
 const props = defineProps({
     items: null,
 })
 
-const dishes = ref(props.items)
+console.log(props.items)
+
+let dishes = ref(props.items)
 const dishItemStatus = ref(true)
 
+const searchDish = ref()
 
+watch(searchDish, debounce(async () => {
+    if(searchDish.value === ''){
+        searchDish.value = ''
+        return
+    }
 
+    const { data } = await axios.get(route('schedule.search.dishes'), {
+        params: { q: searchDish.value}
+    })
+
+    console.log(data)
+    dishes = data
+}, 500))
 </script>
 
 <template>
     <div class="schedule-dishes">
-        <InputStandart model-value=""
+        <InputStandart v-model="searchDish"
                        type="search"
                        placeholder="Поиск по названию"/>
 
         <div class="filters"></div>
 
 
-        <draggable class="schedule-dishes__list"
+        <draggable class="schedule-dishes__list" v-auto-animate
                    v-model="dishes"
                    :group="{ name: 'meals', pull: 'clone', put: false}"
                    @end="drag=false"

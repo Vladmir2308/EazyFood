@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Dish extends Model
 {
+    use Searchable;
     protected $guarded = false;
 
     public function type()
@@ -16,5 +18,12 @@ class Dish extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot('amount', 'unit');
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,
+        ];
     }
 }

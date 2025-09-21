@@ -19,6 +19,8 @@ const takeCurrentDish = () => {
     addableList.status = true
     addableList.method = 'update'
 }
+
+const eyeStatus = inject('eyeStatus')
 </script>
 
 <template>
@@ -33,10 +35,14 @@ const takeCurrentDish = () => {
         <div class="meal__list-dishes__item-buttons">
             <IconButton @click="emit('deleteItemFromMealList', currentDish.id)"
                         :disabled="deleteProcess"
-                        :icon="CircleXmarkIcon"/>
+                        :icon="CircleXmarkIcon"
+                        v-if="eyeStatus"
+            />
 
             <IconButton @click="takeCurrentDish"
-                        :icon="PencilIcon"/>
+                        :icon="PencilIcon"
+                        v-if="eyeStatus"
+            />
         </div>
 
 

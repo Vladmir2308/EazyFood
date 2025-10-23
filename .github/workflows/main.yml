@@ -11,6 +11,9 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Даем блять права пользователю
+        run: sudo chown -R github-runner:github-runner /home/eazyfood-runner/_work
+
       - name: 🌀 Клонирование репозитория
         uses: actions/checkout@v3
 

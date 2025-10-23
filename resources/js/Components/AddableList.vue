@@ -7,7 +7,7 @@ import FieldsStandartBlock from "@/Components/FieldsStandartBlock.vue";
 import ListIcon from "@/Components/Svg/ListIcon.vue";
 import {useForm} from "@inertiajs/vue3";
 import {v4 as uuidv4} from "uuid";
-import {onBeforeUnmount, onMounted, reactive, ref} from "vue";
+import {onBeforeUnmount, onMounted, reactive, ref, watch} from "vue";
 import {debounce} from "lodash";
 import {onKeyUp} from "@vueuse/core";
 
@@ -16,6 +16,8 @@ const props = defineProps({
     headerTitle: String,
     types: Array,
     userId: null,
+    updatedDish: null,
+    method: null
 })
 
 const emit = defineEmits(['closeAddableList'])
@@ -23,6 +25,7 @@ const emit = defineEmits(['closeAddableList'])
 const unitBtns = ['гр', 'мл', 'шт']
 
 const dish = useForm({
+    id: null,
     name: null,
     user_id: props.userId,
     type_id: 1,
@@ -41,6 +44,76 @@ const dish = useForm({
         }
     ],
 })
+
+/* Update Dish */
+const buttonLabel = ref('Сохранить')
+
+const fillUpdatedDishProduct = () => {
+    dish.id = props.updatedDish.id
+    dish.name = props.updatedDish.name
+    dish.type_id = props.updatedDish.type_id
+
+    dish.products = []
+
+    props.updatedDish.products.forEach(item => {
+        dish.products.push({
+            id: uuidv4(),
+            product_id: item.id,
+            name: item.name,
+            amount: item.pivot.amount,
+            unit: item.pivot.unit,
+            category_id: item.categories[0].id,
+            categoryName: item.categories[0].name,
+            nameError: false,
+            amountError: false,
+            categoryListShowStatus: false,
+        })
+    })
+}
+
+watch(() => props.method, () => {
+    if(props.method === 'create'){
+        buttonLabel.value = 'Сохранить'
+
+        dish.name = null
+        dish.type_id = 1
+
+        dish.products = [{
+            id: uuidv4(),
+            product_id: null,
+            name: null,
+            amount: null,
+            unit: null,
+            category_id: null,
+            categoryName: null,
+            nameError: false,
+            amountError: false,
+            categoryListShowStatus: false,
+        }, {
+            id: uuidv4(),
+            product_id: null,
+            name: null,
+            amount: null,
+            unit: null,
+            category_id: null,
+            categoryName: null,
+            nameError: false,
+            amountError: false,
+            categoryListShowStatus: false,
+        }]
+    }
+    else if(props.method === 'update'){
+        buttonLabel.value = 'Обновить'
+
+        fillUpdatedDishProduct()
+    }
+})
+
+watch(() => props.updatedDish, () => {
+    fillUpdatedDishProduct()
+    console.log(props.updatedDish)
+})
+/* ... */
 
 /* Product List */
 const addProductFieldRow = () => {
@@ -103,8 +176,15 @@ const selectSuggestionProduct = (name, rowId) => {
         if(item.name === name){
             currentRow.product_id = item.id
             currentRow.unit = item.default_unit
-            currentRow.categoryName = item.categories[0].name
-            currentRow.category_id = item.categories[0].id
+
+            if(item.categories[0]){
+                currentRow.categoryName = item.categories[0].name
+                currentRow.category_id = item.categories[0].id
+            }
+            else{
+                currentRow.categoryName = null
+                currentRow.category_id = null
+            }
         }
     })
 
@@ -193,7 +273,6 @@ const sendDishData = () => {
 
     errors.dishName = !dish.name
 
-
     dish.products.forEach(product => {
         // Проверка поля name
         product.nameError = !product.name || product.name.trim() === ''
@@ -206,32 +285,39 @@ const sendDishData = () => {
     })
 
     if(!hasError && dish.name){
-        dish.post(route('dish.store'), {
-            onError: (errors) => {
-                if (errors.message) {
-                    alert(errors.message)
+        if(props.method === 'create'){
+            dish.post(route('dish.store'), {
+                onError: (errors) => {
+                    if (errors.message) {
+                        alert(errors.message)
+                    }
+                },
+                onFinish: () => {
+                    const emptyProduct = () => ({
+                        id: uuidv4(),
+                        product_id: null,
+                        name: '',
+                        amount: null,
+                        unit: '',
+                        category_id: null,
+                        categoryName: '',
+                        nameError: false,
+                        amountError: false,
+                        categoryListShowStatus: false,
+                    })
+
+                    dish.name = ''
+                    dish.products = [emptyProduct(), emptyProduct()]
+
+                    emit('closeAddableList')
                 }
-            },
-            onFinish: () => {
-                const emptyProduct = () => ({
-                    id: uuidv4(),
-                    product_id: null,
-                    name: '',
-                    amount: null,
-                    unit: '',
-                    category_id: null,
-                    categoryName: '',
-                    nameError: false,
-                    amountError: false,
-                    categoryListShowStatus: false,
-                })
+            })
 
-                dish.name = ''
-                dish.products = [emptyProduct(), emptyProduct()]
+        }
 
-                emit('closeAddableList')
-            }
-        })
+        else if(props.method === 'update'){
+            dish.post(route('dish.update'))
+        }
     }
 }
 /* ... */
@@ -366,7 +452,7 @@ onBeforeUnmount(() => {
                             @click="sendDishData"
                             :disabled="dish.processing"
                             :class="{'btn--submited': dish.processing}"
-                    >Сохранить</button>
+                    >{{ buttonLabel }}</button>
                 </div>
             </div>
         </div>

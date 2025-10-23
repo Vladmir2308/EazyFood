@@ -1,0 +1,64 @@
+.basket{
+    width: fit-content;
+    height: fit-content;
+
+
+    margin: 2rem auto 0;
+
+    padding-bottom: 2rem;
+}
+
+.basket-send__button-tg{
+    margin: 0 auto 1rem;
+}
+
+.basket-inner{
+    padding: 2rem;
+
+    background: $sidebarBgColor;
+    border-radius: 2rem;
+
+
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.basket-item{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+}
+
+.basket-item__category{
+    font-weight: 700;
+
+    background: $mainBgColor;
+
+
+    padding: .5rem 1rem;
+    border-radius: .5rem;
+
+    margin-bottom: .5rem;
+}
+
+.basket-item__product{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr .5fr .5fr; /* три колонки: название шире, кол-во и ед.уже */
+    gap: 8px; /* расстояние между колонками */
+    align-items: center; /* выравнивание по центру строки */
+    padding: 4px 0;
+    border-bottom: 1px solid $borderSecondColor; /* необязательно, просто для разделения */
+
+    &:last-child{
+        border-bottom: 0;
+    }
+}
+
+
+
+.basket-item__product-total{
+    text-align: end;
+}

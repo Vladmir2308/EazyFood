@@ -1,7 +1,6 @@
 .meal__list{
     width: 100%;
 
-    padding: 0 1.5rem;
     margin-top: 3rem;
 
     display: flex;
@@ -57,6 +56,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
+}
+
+.meal__list-dishes__item-buttons{
+    display: flex;
+    gap: 1rem;
+
+    height: 40px;
+
+    justify-content: center;
 }
 
 .meal__list-dishes__item-title{
@@ -77,3 +86,4 @@
 
     border-radius: 50%;
 }
+

@@ -21,7 +21,8 @@ class DishController extends Controller
                 'id' => $type->id,
                 'name' => $type->name,
                 'color' => $type->color,
-                'dishes' => Dish::where('user_id', auth()->id())
+                'dishes' => Dish::with('products.categories')
+                    ->where('user_id', auth()->id())
                     ->where('type_id', $type->id)
                     ->orderBy('display_number') // если ты добавил сортировку по номеру
                     ->get(),
@@ -40,11 +41,9 @@ class DishController extends Controller
         return response($searchService->searchProductsWithCategory($request->input('q')));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, DishService $dishService)
     {
-        $maxNumber = Dish::where('user_id', auth()->id())
-            ->where('type_id', $request['type_id'])
-            ->max('display_number');
+        $maxNumber = $dishService->getMaxDisplayNumber($request['type_id']);
 
         $dishData = [
             'name' => $request['name'],
@@ -52,6 +51,7 @@ class DishController extends Controller
             'type_id' => $request['type_id'],
             'display_number' => $maxNumber ? $maxNumber + 1 : 1
         ];
+
         $products = $request->input('products');
 
         $existingDish = Dish::where('name', $dishData['name'])
@@ -75,6 +75,8 @@ class DishController extends Controller
                     'user_id' => auth()->id()
                 ]);
                 $category->products()->attach($product['product_id']);
+
+                $dish->products()->attach($product['product_id'], ['amount' => $product['amount'], 'unit' => $product['unit']]);
             }
             else{
                 $productCreated = Product::firstOrCreate([
@@ -91,8 +93,34 @@ class DishController extends Controller
 
                     $productCreated->categories()->attach($category->id);
                 }
+
+                $dish->products()->attach($productCreated['id'], ['amount' => $product['amount'], 'unit' => $product['unit']]);
             }
         }
+    }
+
+    public function update(Request $request, DishService $dishService)
+    {
+        $dish = Dish::findOrFail($request['id']);
+
+        $maxNumber = $dishService->getMaxDisplayNumber($request['type_id']);
+
+        $dish->update([
+            'name' => $request['name'],
+            'type_id' => $request['type_id'],
+            'display_number' => $maxNumber ? $maxNumber + 1 : 1
+        ]);
+
+        $products = collect($request['products'])->mapWithKeys(function ($p) {
+            return [
+                $p['product_id'] => [
+                    'amount' => $p['amount'],
+                    'unit'   => $p['unit'],
+                ]
+            ];
+        });
+
+        $dish->products()->sync($products);
     }
 
     public function delete(Request $request)

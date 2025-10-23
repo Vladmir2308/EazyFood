@@ -28,8 +28,8 @@ class MealTypesSeeder extends Seeder
 
             Type::create([
                 'name' => trim($data['name']),
+                'color' => trim($data['color']),
             ]);
-
         }
 
         fclose($file);

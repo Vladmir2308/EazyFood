@@ -25,7 +25,8 @@
         "@formkit/auto-animate": "^0.8.2",
         "@vueuse/core": "^13.5.0",
         "lodash": "^4.17.21",
+        "tippy.js": "^6.3.7",
         "uuid": "^11.1.0",
-        "vuedraggable": "^2.24.3"
+        "vuedraggable": "^4.1.0"
     }
 }

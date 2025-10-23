@@ -2,7 +2,7 @@
 import {Head} from "@inertiajs/vue3";
 import AddableList from "@/Components/AddableList.vue";
 import MainButton from "@/Components/MainButton.vue";
-import {ref} from "vue";
+import {reactive, ref, provide} from "vue";
 import PlusIcon from "@/Components/Svg/PlusIcon.vue";
 import MealListByType from "@/Components/MealListByType.vue";
 import EyeOpenIcon from "@/Components/Svg/EyeOpenIcon.vue";
@@ -15,16 +15,25 @@ const props = defineProps({
     user_id: null
 })
 
+
 /* Addable List */
-const addableList = ref(false)
-const showAddableList = () => {
-    addableList.value = true
+const addableList = reactive({
+    status: false,
+    dishForUpdate: null,
+    method: null
+})
+
+provide('currentDish', addableList)
+const showAddableList = (method) => {
+    addableList.status = true
+    addableList.method = method
     document.body.style.overflow = 'hidden'
 }
 /* ... */
 
 /* Eyes */
 const showEyeStatus = ref(false)
+provide('eyeStatus', showEyeStatus)
 /* ... */
 </script>
 
@@ -33,15 +42,17 @@ const showEyeStatus = ref(false)
         <div class="dish">
             <Head title="Блюда"/>
 
-            <AddableList :visible="addableList"
-                         @close-addable-list="addableList = false"
+            <AddableList :visible="addableList.status"
+                         @close-addable-list="addableList.status = false"
                          header-title="Добавь свое блюдо"
                          :types="types"
                          :user-id="user_id"
+                         :updated-dish="addableList.dishForUpdate"
+                         :method="addableList.method"
             />
 
             <div class="dish__header">
-                <MainButton :icon="PlusIcon" title="Добавить" @click="showAddableList"/>
+                <MainButton :icon="PlusIcon" title="Добавить" @click="showAddableList('create')"/>
                 <EyeOpenIcon class="eye-icon" v-if="showEyeStatus" @click="showEyeStatus = !showEyeStatus"/>
                 <EyeCloseIcon class="eye-icon" v-if="!showEyeStatus" @click="showEyeStatus = !showEyeStatus"/>
             </div>

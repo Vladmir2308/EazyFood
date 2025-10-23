@@ -24,11 +24,26 @@ Route::group(['middleware' => 'auth', 'namespace' => 'App\Http\Controllers'], fu
     /* Dishes */
         Route::get('/dishes', 'DishController@index')->name('dish.index');
         Route::post('/dishes/store', 'DishController@store')->name('dish.store');
+        Route::post('/dishes/update', 'DishController@update')->name('dish.update');
         Route::delete('/dishes/delete', 'DishController@delete')->name('dish.delete');
         Route::get('/dishes/search/product', 'DishController@searchProduct')->name('dish.search.product');
 
     /* Schedule */
         Route::get('/schedule', 'ScheduleController@index')->name('schedule.index');
+        Route::post('/schedule/store', 'ScheduleController@store')->name('schedule.store');
+        Route::delete('/schedule/delete', 'ScheduleController@delete')->name('schedule.delete');
+
+        Route::get('/schedule/search/dishes', 'ScheduleController@getDishesInQuery')->name('schedule.search.dishes');
+
+    /* Basket */
+        Route::get('/basket', 'BasketController@index')->name('basket.index');
+
+    /* Telegram */
+});
+
+Route::group(['namespace' => 'App\Http\Controllers'], function () {
+    Route::post('/telegram/createChat', 'TelegramController@createChat')->name('telegram.create.chat');
+    Route::post('/telegram/sendBasketInMessage', 'TelegramController@sendBasketMessage')->name('telegram.send.message');
 });
 
 require __DIR__.'/auth.php';

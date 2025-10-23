@@ -21,4 +21,13 @@ class DishService
             }
         }
     }
+
+    public function getMaxDisplayNumber(int $typeId)
+    {
+        $maxNumber = Dish::where('user_id', auth()->id())
+            ->where('type_id', $typeId)
+            ->max('display_number');
+
+        return $maxNumber;
+    }
 }
